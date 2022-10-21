@@ -8,8 +8,9 @@
 #define SCL_PIN 5
 
 #define DISPLAY_ADDRESS  0x3C // SH1106
-#define PCF8574          0x38
+#define PCF8574A         0x38 // PCF8574A has different range than PCF8574
 #define AVRTOUCH         0x11
+#define GUY_FAWKES       0x50
 
 
 #define LEFT_EYE 0
