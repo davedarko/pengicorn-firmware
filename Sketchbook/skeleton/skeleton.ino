@@ -12,7 +12,6 @@
 #define AVRTOUCH         0x11
 #define GUY_FAWKES       0x50
 
-
 #define LEFT_EYE 0
 #define RIGHT_EYE 1
 #define NEOPIXEL_PIN 0
@@ -36,6 +35,8 @@ boolean bottonB_pressed = false;
 boolean bottonC_pressed = false;
 boolean bottonSD_pressed = false;
 
+uint16_t touchValue;
+
 Adafruit_NeoPixel strip(NEOPIXEL_CNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 // use the frame buffer or U8x8 versions for ESP8266, page buffer does not work
@@ -58,6 +59,8 @@ void setup() {
 
 void loop() {
   read_buttons();
+
+  read_touch();
   
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_10x20_tf);
@@ -67,18 +70,27 @@ void loop() {
   u8g2.setFontDirection(0);
   u8g2.drawStr( 0, 0, "@davedarko");
   u8g2.drawStr( 0, 20, "#supercon22");
+
+  u8g2.setFont(u8g2_font_6x10_tf);
+
+  if (bottonU_pressed) u8g2.drawStr(  0, 40, "U");
+  if (bottonD_pressed) u8g2.drawStr(  6, 40, "D");
+  if (bottonL_pressed) u8g2.drawStr( 12, 40, "L");
+  if (bottonR_pressed) u8g2.drawStr( 18, 40, "R");
+  if (bottonA_pressed) u8g2.drawStr( 24, 40, "A"); 
+  if (bottonB_pressed) u8g2.drawStr( 30, 40, "B");
+
+  // these values need some tweaking
+  if (touchValue>120) u8g2.drawStr( 60, 40, "Horn");
+  else if (touchValue>60) u8g2.drawStr( 36, 40, "Beak");
+
+  Serial.print("Horn: ");
+  Serial.print(touchValue);
+  Serial.println();
+
   u8g2.sendBuffer();
   delay(100);
 
-  if (bottonU_pressed) Serial.println("U");
-  if (bottonD_pressed) Serial.println("D");
-  if (bottonL_pressed) Serial.println("L");
-  if (bottonR_pressed) Serial.println("R");
-  if (bottonA_pressed) Serial.println("A");
-  if (bottonB_pressed) Serial.println("B");
-  if (bottonC_pressed) Serial.println("C");
-  if (bottonSD_pressed) Serial.println("SD");
-  
   // put your main code here, to run repeatedly:
   //  strip.setPixelColor(LEFT_EYE, strip.Color(127, 0, 0));
   //  strip.setPixelColor(RIGHT_EYE, strip.Color(0, 127, 0));
@@ -97,4 +109,10 @@ void read_buttons()
   bottonB_pressed = (~data & BUTTON_B) > 0;
   bottonC_pressed = (~data & BUTTON_C) > 0;
   bottonSD_pressed = (~data & BUTTON_SD) > 0;
+}
+
+void read_touch() {
+  Wire.requestFrom(0x11, 1);
+  byte b = Wire.read();
+  touchValue =  (touchValue + (uint16_t) b)/2;
 }
