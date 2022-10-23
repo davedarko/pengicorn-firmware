@@ -84,6 +84,8 @@ void loop() {
   if (touchValue>120) u8g2.drawStr( 60, 40, "Horn");
   else if (touchValue>60) u8g2.drawStr( 36, 40, "Beak");
 
+  u8g2.drawStr( 84, 40, touchValue);
+
   Serial.print("Horn: ");
   Serial.print(touchValue);
   Serial.println();
