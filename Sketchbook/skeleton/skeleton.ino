@@ -81,10 +81,12 @@ void loop() {
   if (bottonB_pressed) u8g2.drawStr( 30, 40, "B");
 
   // these values need some tweaking
-  if (touchValue>120) u8g2.drawStr( 60, 40, "Horn");
+  if (touchValue>90) u8g2.drawStr( 60, 40, "Horn");
   else if (touchValue>60) u8g2.drawStr( 36, 40, "Beak");
 
-  u8g2.drawStr( 84, 40, touchValue);
+  char cstr[16];
+  itoa(touchValue, cstr, 10);
+  u8g2.drawStr( 84, 40, cstr);
 
   Serial.print("Horn: ");
   Serial.print(touchValue);
